@@ -1,0 +1,40 @@
+<section id="seccion_mapa" class="w-full bg-gradient-to-b from-white to-gray-100 py-12 px-4 lg:px-20">
+  <div class="max-w-7xl mx-auto bg-white rounded-2xl shadow-lg p-6 md:p-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <!-- Selector de Estado -->
+    <div class="lg:col-span-1">
+      <h3 class="text-2xl font-bold text-gray-800 mb-4">¿Dónde estás?</h3>
+      <label class="block text-black text-sm mb-2">Elige una ubicación</label>
+      <select id="selector_estado" class="w-full border border-gray-300 text-black rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400">
+        <option disabled selected>Selecciona un estado</option>
+        <option value="Veracruz">Veracruz</option>
+        <option value="Jalisco">Jalisco</option>
+        <option value="Ciudad de México">Ciudad de México</option>
+        <option value="Nuevo León">Nuevo León</option>
+        <option value="Puebla">Puebla</option>
+      </select>
+
+      <!-- Selector de municipio -->
+      <div id="municipio_container"></div>
+
+      <!-- Selector de filtro -->
+      <div id="filtro_container"></div>
+
+      <!-- Simbología / Leyenda -->
+      <div class="bg-gray-100 rounded-lg p-4 shadow-inner border text-sm text-gray-800 mt-4">
+        <h4 class="font-semibold mb-2">🗺️ Simbología del Índice de Preservación Cultural</h4>
+        <ul class="space-y-1">
+          <li><span class="inline-block w-4 h-4 mr-2 rounded-full" style="background-color: #fe0000;"></span> Alto riesgo de pérdida (Índice bajo: 0–199)</li>
+          <li><span class="inline-block w-4 h-4 mr-2 rounded-full" style="background-color: #fff205;"></span> Riesgo moderado (Índice medio: 200–349)</li>
+          <li><span class="inline-block w-4 h-4 mr-2 rounded-full" style="background-color: #7cff01;"></span> Alta preservación (Índice alto: 350–500)</li>
+          <li><span class="inline-block w-4 h-4 mr-2 rounded-full border border-gray-400 bg-gray-200"></span> Sin datos disponibles</li>
+        </ul>
+        <p class="text-xs mt-2 text-gray-500">*Datos verificados por INAH y TST.</p>
+      </div>
+    </div>
+
+    <!-- Mapa Interactivo -->
+    <div id="mapa_mexico" class="lg:col-span-2 rounded-lg overflow-hidden border text-black shadow-md"
+      style="width: 100%; height: 500px;"></div>
+  </div>
+</section>

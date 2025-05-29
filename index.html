@@ -9,15 +9,18 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet" />
     <style>
         .gradient {
-            background: linear-gradient(90deg, #d53369 0%, #daae51 100%);
+            background: linear-gradient(90deg, #db3c3c 0%, #2cbeb4 50%, #f4e04d 100%);
         }
     </style>
+
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 
 <body class="leading-normal tracking-normal text-white gradient" style="font-family: 'Source Sans Pro', sans-serif;">
     <div id="header"></div>
     <div id="hero"></div>
-    <div id="features"></div>
+    <div id="mapa"></div>
     <div id="cards"></div>
     <div id="pricing"></div>
     <div id="wave-top"></div>
@@ -25,28 +28,193 @@
     <div id="footer"></div>
 
     <script>
+        const municipiosPorEstado = {
+            'Veracruz': ['Orizaba', 'Xalapa', 'Veracruz Puerto'],
+            'Jalisco': ['Guadalajara', 'Puerto Vallarta', 'Tlaquepaque'],
+            'Ciudad de México': ['Coyoacán', 'Tlalpan', 'Iztapalapa'],
+            'Nuevo León': ['Monterrey', 'San Pedro Garza García'],
+            'Puebla': ['Puebla', 'Tehuacán']
+        };
+
+
         async function loadComponent(id, path) {
             const response = await fetch(path);
             const html = await response.text();
             document.getElementById(id).innerHTML = html;
         }
 
-        async function init() {
+        async function initApp() {
             await Promise.all([
                 loadComponent('header', './components/Header.html'),
                 loadComponent('hero', './components/Hero.html'),
-                loadComponent('features', './components/Features.html'),
+                loadComponent('mapa', './components/Mapa.html'),
                 loadComponent('cards', './components/Cards.html'),
-                loadComponent('pricing', './components/Pricing.html'),
                 loadComponent('wave-top', './components/WaveTop.html'),
                 loadComponent('call-to-action', './components/CallToAction.html'),
                 loadComponent('footer', './components/Footer.html')
             ]);
 
-            // 🟢 Activar comportamientos una vez que los componentes están cargados
             activateScrollEffect();
             activateMenuToggle();
+            setupBuscadorUbicacion();
+
+            // Cargar mapa
+            google.charts.load('current', {
+                packages: ['geochart'],
+                mapsApiKey: 'TU_API_KEY_GOOGLE_MAPS'
+            });
+            google.charts.setOnLoadCallback(drawRegionsMap);
         }
+
+        function drawRegionsMap() {
+            const mapaDiv = document.getElementById('mapa_mexico');
+            if (!mapaDiv) return;
+
+            const data = google.visualization.arrayToDataTable([
+                ['Estado', 'Índice', { role: 'tooltip', type: 'string', p: { html: true } }],
+                ['Veracruz', 120, tooltip('Veracruz', 120, 'alto')],
+                ['Puebla', 380, tooltip('Puebla', 380, 'bajo')],
+                ['Jalisco', 250, tooltip('Jalisco', 250, 'moderado')],
+                ['Nuevo León', 300, tooltip('Nuevo León', 300, 'moderado')],
+                ['Oaxaca', 450, tooltip('Oaxaca', 450, 'bajo')],
+                ['Yucatán', 400, tooltip('Yucatán', 400, 'bajo')],
+                ['Chiapas', 350, tooltip('Chiapas', 350, 'moderado')],
+                ['Guanajuato', 340, tooltip('Guanajuato', 340, 'moderado')],
+                ['Sonora', 150, tooltip('Sonora', 150, 'alto')],
+                ['Sinaloa', 100, tooltip('Sinaloa', 100, 'alto')],
+                ['Baja California', 80, tooltip('Baja California', 80, 'alto')],
+                ['Chihuahua', 90, tooltip('Chihuahua', 90, 'alto')],
+                ['Coahuila', 110, tooltip('Coahuila', 110, 'alto')],
+                ['Durango', 130, tooltip('Durango', 130, 'alto')],
+                ['Zacatecas', 140, tooltip('Zacatecas', 140, 'alto')],
+                ['San Luis Potosí', 160, tooltip('San Luis Potosí', 160, 'alto')],
+                ['Aguascalientes', 170, tooltip('Aguascalientes', 170, 'alto')],
+                ['Querétaro', 180, tooltip('Querétaro', 180, 'alto')],
+                ['Hidalgo', 190, tooltip('Hidalgo', 190, 'alto')],
+                ['Tlaxcala', 210, tooltip('Tlaxcala', 210, 'moderado')],
+                ['Morelos', 220, tooltip('Morelos', 220, 'moderado')],
+                ['Estado de México', 230, tooltip('Estado de México', 230, 'moderado')],
+                ['Ciudad de México', 240, tooltip('Ciudad de México', 240, 'moderado')],
+                ['Tabasco', 260, tooltip('Tabasco', 260, 'moderado')],
+                ['Campeche', 270, tooltip('Campeche', 270, 'moderado')],
+                ['Quintana Roo', 280, tooltip('Quintana Roo', 280, 'moderado')],
+                ['Nayarit', 310, tooltip('Nayarit', 310, 'moderado')],
+                ['Colima', 320, tooltip('Colima', 320, 'moderado')],
+                ['Michoacán', 330, tooltip('Michoacán', 330, 'moderado')],
+            ]);
+
+            function tooltip(estado, valor, riesgo) {
+                const colores = {
+                    'alto': '🔴',
+                    'moderado': '🟡',
+                    'bajo': '🟢'
+                };
+
+                const leyendas = {
+                    'alto': '⚠️ Riesgo alto de pérdida',
+                    'moderado': '⚠️ Riesgo moderado de pérdida',
+                    'bajo': '🎉 Alta preservación cultural'
+                };
+
+                return `
+    <div style="padding:6px; max-width:240px;">
+      ${colores[riesgo]} <b>Índice:</b> ${valor}<br>
+      ${leyendas[riesgo]}<br>
+      <div style="margin-top:6px; display:flex; gap:8px; align-items:center;">
+        <img src="logo_INAH-removebg-preview.png" alt="INAH" width="26" height="26">
+        <img src="TST_logo-removebg-preview.png" alt="TecNM" width="26" height="26">
+      </div>
+      <div style="font-size:12px; margin-top:4px; color:#444;">
+        Datos verificados por INAH y TecNM
+      </div>
+    </div>
+  `;
+            }
+            const options = {
+                region: 'MX',
+                displayMode: 'regions',
+                resolution: 'provinces',
+                tooltip: { isHtml: true },
+                colorAxis: {
+                    colors: [
+                        '#fe0000', // 🔴 Riesgo muy alto (rojo)
+                        '#ff8c00', // 🟠 Riesgo alto (naranja fuerte)
+                        '#fff205', // 🟡 Riesgo moderado (amarillo)
+                        '#b7f34a', // 🟢 Buena preservación (verde limón)
+                        '#00b050'  // 🟢 Alta preservación (verde oscuro)
+                    ]
+                },
+                backgroundColor: '#A4b5c4',
+                datalessRegionColor: '#cfd5d3',
+                defaultColor: '#181919'
+            };
+
+            const chart = new google.visualization.GeoChart(mapaDiv);
+            chart.draw(data, options);
+
+            window.addEventListener('resize', () => {
+                chart.draw(data, options);
+            });
+
+            google.visualization.events.addListener(chart, 'select', function () {
+                const selection = chart.getSelection();
+                if (selection.length > 0) {
+                    const estado = data.getValue(selection[0].row, 0);
+                    const estadoEncoded = encodeURIComponent(estado);
+                    window.location.href = `municipios.html?estado=${estadoEncoded}`;
+                }
+            });
+        }
+
+        function setupBuscadorUbicacion() {
+            const estadoSelect = document.getElementById('selector_estado');
+            const municipioContainer = document.getElementById('municipio_container');
+            const filtroContainer = document.getElementById('filtro_container');
+
+            if (!estadoSelect || !municipioContainer || !filtroContainer) return;
+
+            estadoSelect.addEventListener('change', () => {
+                const estado = estadoSelect.value;
+
+                // Mostrar municipios
+                municipioContainer.innerHTML = `
+      <label class="block text-black text-sm mt-4 mb-2">Selecciona un municipio</label>
+      <select id="selector_municipio" class="w-full border border-gray-300 text-black rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400">
+        <option disabled selected>Selecciona un municipio</option>
+        ${(municipiosPorEstado[estado] || []).map(m => `<option value="${m}">${m}</option>`).join('')}
+      </select>
+    `;
+
+                // Vaciar el filtro hasta que se seleccione municipio
+                filtroContainer.innerHTML = '';
+
+                const municipioSelect = document.getElementById('selector_municipio');
+                municipioSelect.addEventListener('change', () => {
+                    const municipio = municipioSelect.value;
+
+                    // Mostrar filtros
+                    filtroContainer.innerHTML = `
+        <label class="block text-black text-sm mt-4 mb-2">¿Qué deseas consultar?</label>
+        <select id="selector_filtro" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-black focus:outline-none focus:ring-2 focus:ring-pink-400">
+          <option disabled selected>Selecciona una opción</option>
+          <option value="vestimenta">Vestimenta</option>
+          <option value="cultura">Cultura</option>
+          <option value="alimentos">Alimentos</option>
+          <option value="historia">Historia</option>
+        </select>
+      `;
+
+                    const filtroSelect = document.getElementById('selector_filtro');
+                    filtroSelect.addEventListener('change', () => {
+                        const filtro = filtroSelect.value;
+                        const url = `municipio.html?estado=${encodeURIComponent(estado)}&municipio=${encodeURIComponent(municipio)}&filtro=${encodeURIComponent(filtro)}`;
+                        window.location.href = url;
+                    });
+                });
+            });
+        }
+
+
 
         function activateScrollEffect() {
             const header = document.getElementById("header");
@@ -62,8 +230,8 @@
                 if (scrollpos > 10) {
                     header.classList.add("bg-white", "shadow");
                     header.classList.remove("text-white");
-                    navcontent?.classList.remove("bg-gray-100");
                     navcontent?.classList.add("bg-white");
+                    navcontent?.classList.remove("bg-gray-100");
 
                     if (navaction) {
                         navaction.classList.remove("bg-white", "text-gray-800");
@@ -101,7 +269,6 @@
                 navToggle.addEventListener("click", () => {
                     navMenuDiv.classList.toggle("hidden");
 
-                    // Aplica fondo blanco y sombra cuando se muestra en móvil
                     if (!navMenuDiv.classList.contains("hidden")) {
                         navMenuDiv.classList.add("bg-white", "shadow-lg", "rounded-b-lg");
                     } else {
@@ -111,13 +278,9 @@
             }
         }
 
-        // Ejecutar cuando todo esté listo
-        document.addEventListener("DOMContentLoaded", () => {
-            init();
-        });
+        // Inicializa todo al cargar
+        document.addEventListener("DOMContentLoaded", initApp);
     </script>
-
-
 </body>
 
 </html>
