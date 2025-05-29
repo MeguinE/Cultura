@@ -25,11 +25,29 @@
     <div id="pricing"></div>
     <div id="wave-top"></div>
     <div id="call-to-action"></div>
+    <div id="colabora"></div>
     <div id="footer"></div>
 
     <script>
         const municipiosPorEstado = {
-            'Veracruz': ['Orizaba', 'Xalapa', 'Veracruz Puerto'],
+            'Veracruz': [
+                'Coatepec',
+                'Córdoba',
+                'La Antigua',
+                'Orizaba',
+                'Papantla',
+                'Rafael Delgado',
+                'Tantoyuca',
+                'Tlilapan',
+                'Zongolica',
+                'Tlacotalpan',
+                'Alvarado',
+                'Xalapa',
+                'Veracruz',
+                'Coscomatepec',
+                'Catemaco',
+                'Amatlán'
+            ],
             'Jalisco': ['Guadalajara', 'Puerto Vallarta', 'Tlaquepaque'],
             'Ciudad de México': ['Coyoacán', 'Tlalpan', 'Iztapalapa'],
             'Nuevo León': ['Monterrey', 'San Pedro Garza García'],
@@ -51,6 +69,7 @@
                 loadComponent('cards', './components/Cards.html'),
                 loadComponent('wave-top', './components/WaveTop.html'),
                 loadComponent('call-to-action', './components/CallToAction.html'),
+                loadComponent('colabora', './components/ColaboraBeelPedia.html'),
                 loadComponent('footer', './components/Footer.html')
             ]);
 
@@ -206,10 +225,10 @@
 
                     const filtroSelect = document.getElementById('selector_filtro');
                     filtroSelect.addEventListener('change', () => {
-                        const filtro = filtroSelect.value;
-                        const url = `municipio.html?estado=${encodeURIComponent(estado)}&municipio=${encodeURIComponent(municipio)}&filtro=${encodeURIComponent(filtro)}`;
-                        window.location.href = url;
+                        const municipioSlug = municipio.replace(/\s+/g, '-').toLowerCase();
+                        window.location.href = `/${municipioSlug}`;
                     });
+
                 });
             });
         }

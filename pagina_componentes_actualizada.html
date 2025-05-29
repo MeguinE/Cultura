@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Página con Componentes</title>
+    <meta name="description" content="Simple landing page" />
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet" />
+    <style>
+        .gradient {
+            background: linear-gradient(90deg, #db3c3c 0%, #2cbeb4 50%, #f4e04d 100%);
+        }
+    </style>
+</head>
+
+<body class="leading-normal tracking-normal text-white gradient" style="font-family: 'Source Sans Pro', sans-serif;">
+    <div id="header"></div>
+    <div id="hero"></div>
+    <div id="mapa"></div>
+    <div id="cards"></div>
+    <div id="pricing"></div>
+    <div id="wave-top"></div>
+    <div id="call-to-action"></div>
+    <div id="footer"></div>
+
+    <div class="container mx-auto p-8 bg-white text-black rounded shadow mt-8">
+        <label class="block text-sm mb-2">Selecciona un estado</label>
+        <select id="selector_estado" class="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4">
+            <option disabled selected>Selecciona un estado</option>
+            <option value="Veracruz">Veracruz</option>
+            <option value="Jalisco">Jalisco</option>
+            <option value="Ciudad de México">Ciudad de México</option>
+            <option value="Nuevo León">Nuevo León</option>
+            <option value="Puebla">Puebla</option>
+        </select>
+
+        <div id="municipio_container"></div>
+        <div id="filtro_container"></div>
+    </div>
+
+    <script>
+        const municipiosPorEstado = {
+            'Veracruz': [
+                'Coatepec', 'Córdoba', 'La Antigua', 'Orizaba', 'Papantla',
+                'Rafael Delgado', 'Tantoyuca', 'Tlilapan', 'Zongolica', 'Tlacotalpan',
+                'Alvarado', 'Xalapa', 'Veracruz', 'Coscomatepec', 'Catemaco', 'Amatlán'
+            ],
+            'Jalisco': ['Guadalajara', 'Puerto Vallarta', 'Tlaquepaque'],
+            'Ciudad de México': ['Coyoacán', 'Tlalpan', 'Iztapalapa'],
+            'Nuevo León': ['Monterrey', 'San Pedro Garza García'],
+            'Puebla': ['Puebla', 'Tehuacán']
+        };
+
+        async function loadComponent(id, path) {
+            const response = await fetch(path);
+            const html = await response.text();
+            document.getElementById(id).innerHTML = html;
+        }
+
+        async function initApp() {
+            await Promise.all([
+                loadComponent('header', './components/Header.html'),
+                loadComponent('hero', './components/Hero.html'),
+                loadComponent('mapa', './components/Mapa.html'),
+                loadComponent('cards', './components/Cards.html'),
+                loadComponent('wave-top', './components/WaveTop.html'),
+                loadComponent('call-to-action', './components/CallToAction.html'),
+                loadComponent('footer', './components/Footer.html')
+            ]);
+            setupBuscadorUbicacion();
+        }
+
+        function setupBuscadorUbicacion() {
+            const estadoSelect = document.getElementById('selector_estado');
+            const municipioContainer = document.getElementById('municipio_container');
+            const filtroContainer = document.getElementById('filtro_container');
+
+            if (!estadoSelect || !municipioContainer || !filtroContainer) return;
+
+            estadoSelect.addEventListener('change', () => {
+                const estado = estadoSelect.value;
+
+                municipioContainer.innerHTML = `
+                    <label class="block text-sm mt-4 mb-2">Selecciona un municipio</label>
+                    <select id="selector_municipio" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                        <option disabled selected>Selecciona un municipio</option>
+                        ${(municipiosPorEstado[estado] || []).map(m => `<option value="${m}">${m}</option>`).join('')}
+                    </select>
+                `;
+
+                filtroContainer.innerHTML = '';
+
+                const municipioSelect = document.getElementById('selector_municipio');
+                municipioSelect.addEventListener('change', () => {
+                    const municipio = municipioSelect.value;
+
+                    filtroContainer.innerHTML = `
+                        <label class="block text-sm mt-4 mb-2">¿Qué deseas consultar?</label>
+                        <select id="selector_filtro" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                            <option disabled selected>Selecciona una opción</option>
+                            <option value="vestimenta">Vestimenta</option>
+                            <option value="cultura">Cultura</option>
+                            <option value="alimentos">Alimentos</option>
+                            <option value="historia">Historia</option>
+                        </select>
+                    `;
+
+                    const filtroSelect = document.getElementById('selector_filtro');
+                    filtroSelect.addEventListener('change', () => {
+                        const municipioSlug = municipio.replace(/\s+/g, '-').toLowerCase();
+                        window.location.href = `/${municipioSlug}`;
+                    });
+                });
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", initApp);
+    </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<section class="bg-white text-black py-12">
+  <div class="container mx-auto px-6">
+    <h2 class="text-3xl font-bold text-center mb-6">Colabora con BeelPedia</h2>
+    <p class="text-center mb-10 text-lg">
+      Comparte tu conocimiento sobre las tradiciones, historia o cultura de tu municipio. Todas las propuestas serán revisadas por nuestro equipo.
+    </p>
+
+    <form class="max-w-3xl mx-auto bg-gray-50 p-6 rounded-lg shadow" id="form-colaboracion">
+      <div class="mb-4">
+        <label class="block text-sm font-semibold mb-1" for="categoria">Categoría</label>
+        <select id="categoria" name="categoria" class="w-full border border-gray-300 rounded px-4 py-2">
+          <option disabled selected>Selecciona una categoría</option>
+          <option value="historia">Historia</option>
+          <option value="vestimenta">Vestimenta</option>
+          <option value="cultura">Cultura</option>
+          <option value="lengua">Lengua</option>
+          <option value="gastronomia">Gastronomía</option>
+          <option value="otros">Otros</option>
+        </select>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-semibold mb-1" for="municipio">Municipio relacionado</label>
+        <input type="text" id="municipio" name="municipio" placeholder="Ej. Zongolica" class="w-full border border-gray-300 rounded px-4 py-2" />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-semibold mb-1" for="titulo">Título de tu colaboración</label>
+        <input type="text" id="titulo" name="titulo" placeholder="Ej. La historia de la danza del quetzal" class="w-full border border-gray-300 rounded px-4 py-2" />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-semibold mb-1" for="contenido">Contenido propuesto</label>
+        <textarea id="contenido" name="contenido" rows="6" placeholder="Escribe aquí tu texto..." class="w-full border border-gray-300 rounded px-4 py-2"></textarea>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-semibold mb-1" for="fuentes">Fuentes / Referencias (opcional)</label>
+        <input type="text" id="fuentes" name="fuentes" placeholder="Incluye enlaces o textos de referencia" class="w-full border border-gray-300 rounded px-4 py-2" />
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-sm font-semibold mb-1" for="archivo">Sube una imagen o documento (opcional)</label>
+        <input type="file" id="archivo" name="archivo" class="w-full" />
+      </div>
+
+      <button type="submit" class="bg-yellow-500 text-white font-bold px-6 py-2 rounded hover:bg-yellow-600 transition duration-300">
+        Enviar propuesta
+      </button>
+    </form>
+  </div>
+</section>
